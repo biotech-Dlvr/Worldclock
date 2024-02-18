@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.33/moment-timezone-with-data.min.js"></script>
+    <title>World clock</title>
+</head>
+<style>
+    body {
+        background-position: center top;
+        background-image: url("./earth-world-removebg-preview.png");
+        background-size: 50% auto;
+        background-repeat: no-repeat;
+        opacity: 0.7;
+        overflow: hidden;
+    }
+
+    .container {
+        position: relative;
+        top: 40px;
+        color: black;
+        max-width: 500px;
+        max-height: 400px;
+        margin: 60px auto;
+        background: white;
+        padding: 30px;
+        box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+        border-radius: 30% 30%;
+    }
+
+    select {
+        display: block;
+        width: 50%;
+        margin: 30px auto;
+        padding: 10px;
+    }
+
+
+    h1 {
+        text-align: center;
+        margin-top: 30px;
+    }
+
+    .row {
+        display: flex;
+        flex-wrap: wrap;
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+        font-size: 10px;
+    }
+
+    .col-6 {
+        flex: 0 0 50%;
+        max-width: 50%;
+        text-align: center;
+    }
+
+    .city:last-child {
+        border: none;
+    }
+
+    .time {
+        font-size: 30px;
+        font-weight: bold;
+        line-height: 36px;
+        margin: 10px;
+    }
+
+    .date {
+        opacity: 0.7;
+    }
+
+    footer {
+        position: relative;
+        top: 150px;
+        left: -550px;
+        bottom: 0;
+        right: 0;
+        font-size: 14px;
+        color: black;
+        transition: all 150ms ease;
+        text-align: center;
+    }
+</style>
+
+<body>
+
+    <div class="container">
+        <h1> <a href="index.html">World Clock</a></h1>
+        <label for="cities"></label>
+        <select id="city">
+            <option value="">Select a city</option>
+            <option value="current">Current location</option>
+            <option value="America/Los_Angeles">Los Angeles</option>
+            <option value="Asia/Tehran">Tehran</option>
+            <option value="Pacific/Sydney">Sydney</option>
+        </select>
+        <div class="row city" id="cities">
+            <div class="col-6" id="los-angeles">
+                <div>
+                    <h2>Los Angeles</h2>
+                    <div class="date"></div>
+                </div>
+                <div class="time"></div>
+            </div>
+            <div class="col-6" id="tehran">
+                <div>
+                    <h2>Tehran</h2>
+                    <div class="date"></div>
+                </div>
+                <div class="time"></div>
+            </div>
+        </div>
+    </div>
+    </div>
+    <footer>
+        <a href="https://github.com/biotech-Dlvr/" target="_blank" rel="noreferrer">
+            GitHub repository
+        </a>
+        by Azar Delavari
+    </footer>
+
+
+    <script>
+        function updateTime() {
+            let losAngelesElement = document.querySelector("#los-angeles");
+            if (losAngelesElement) {
+                let losAngelesDateElement = losAngelesElement.querySelector(".date");
+                let lostAngelesTimeElement = losAngelesElement.querySelector(".time");
+                let losAngelesTime = moment().tz("America/Los_Angeles");
+
+                losAngelesDateElement.innerHTML = losAngelesTime.format("MMMM	Do YYYY");
+                lostAngelesTimeElement.innerHTML = losAngelesTime.format(
+                    "h:mm:ss A"
+                );
+            }
+
+
+            let tehranElement = document.querySelector("#tehran");
+            if (tehranElement) {
+                let tehranDateElement = tehranElement.querySelector(".date");
+                let tehranTimeElement = tehranElement.querySelector(".time");
+                let tehranTime = moment().tz("Asia/Tehran");
+
+                tehranDateElement.innerHTML = tehranTime.format("MMMM	Do YYYY");
+                tehranTimeElement.innerHTML = tehranTime.format(
+                    "h:mm:ss A"
+                );
+            }
+        }
+
+        function updateCity(event) {
+            let cityTimeZone = event.target.value;
+            if (cityTimeZone === "current") {
+                cityTimeZone = moment.tz.guess();
+            }
+            let cityName = cityTimeZone.replace("_", " ").split("/")[1];
+            let cityTime = moment().tz(cityTimeZone);
+            let citiesElement = document.querySelector("#cities");
+            citiesElement.innerHTML = `
+  <div class="city" >
+    <div>
+      <h2>${cityName}</h2>
+      <div class="date">${cityTime.format("MMMM	Do YYYY")}</div>
+    </div>
+    <div class="time">${cityTime.format("h:mm:ss")} ${cityTime.format(
+                "A"
+            )}</div>
+  </div>
+  `;
+            citiesElement.style.textAlign = "center";
+            citiesElement.style.margin = "50px 140px";
+        }
+
+        updateTime();
+        setInterval(updateTime, 1000);
+
+        let citiesSelectElement = document.querySelector("#city");
+        citiesSelectElement.addEventListener("change", updateCity);
+    </script>
+</body>
+
+</html>
